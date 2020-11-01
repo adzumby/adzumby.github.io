@@ -65,7 +65,7 @@
           <div class="u-container-layout u-valign-bottom u-container-layout-1">
             <h1 class="u-custom-font u-heading-font u-text u-text-1">Contact Us</h1>
             <div class="u-expanded-width u-form u-form-1">
-              <form action="#" method="POST" class="u-clearfix u-form-spacing-20 u-form-vertical u-inner-form" style="padding: 0;" source="custom" name="form">
+              <form id="javascript_form" action="#" method="POST" class="u-clearfix u-form-spacing-20 u-form-vertical u-inner-form" style="padding: 0;" source="custom" name="form">
                 <div class="u-form-group u-form-name u-form-group-1">
                   <label for="name-54ef" class="u-custom-font u-form-control-hidden u-heading-font u-label">Name</label>
                   <input type="text" placeholder="Name" id="name-54ef" name="name" class="u-border-3 u-border-grey-75 u-input u-input-round u-radius-10 u-white" required="">
@@ -80,7 +80,7 @@
                 </div>
                 <div class="u-align-left u-form-group u-form-submit u-form-group-4">
                   <a href="#" class="u-black u-border-3 u-border-grey-dark-1 u-btn u-btn-round u-btn-submit u-button-style u-custom-font u-heading-font u-hover-grey-80 u-radius-10 u-btn-1">Submit</a>
-                  <input type="submit" value="submit" class="u-form-control-hidden">
+                  <input type="submit" id="js_send" value="Send" class="u-form-control-hidden">
                 </div>
                 <div class="u-form-send-message u-form-send-success"> Thank you! Your message has been sent. </div>
                 <div class="u-form-send-error u-form-send-message"> Unable to send your message. Please fix errors then try again. </div>
@@ -90,6 +90,82 @@
           </div>
         </div>
       </div>
+
+
+      <!-- <form id="javascript_form">
+        <input type="text" name="name" placeholder="Name" />
+        <input type="text" name="email" placeholder="Email" />
+        <textarea name="text" placeholder="Message"></textarea>
+        <input type="submit" id="js_send" value="Send" />
+    </form> -->
+    
+    <script>
+    
+        //update this with your js_form selector
+        var form_id_js = "javascript_form";
+    
+        var data_js = {
+            "access_token": "j1zlcyyf7yk2leovn3xjp19n"
+        };
+    
+        function js_onSuccess() {
+            // remove this to avoid redirect
+            window.location = window.location.pathname + "?message=Email+Successfully+Sent%21&isError=0";
+        }
+    
+        function js_onError(error) {
+            // remove this to avoid redirect
+            window.location = window.location.pathname + "?message=Email+could+not+be+sent.&isError=1";
+        }
+    
+        var sendButton = document.getElementById("js_send");
+    
+        function js_send() {
+            sendButton.value='Sending…';
+            sendButton.disabled=true;
+            var request = new XMLHttpRequest();
+            request.onreadystatechange = function() {
+                if (request.readyState == 4 && request.status == 200) {
+                    js_onSuccess();
+                } else
+                if(request.readyState == 4) {
+                    js_onError(request.response);
+                }
+            };
+    
+            var name = document.querySelector("#" + form_id_js + " [name='name']").value;
+            var email = document.querySelector("#" + form_id_js + " [name='email']").value;
+            var message = document.querySelector("#" + form_id_js + " [name='message']").value;
+            data_js['subject'] = 'Inquiry from ' + name;
+            data_js['text'] = 'AdZumby Contact Request' +  '\nFrom: ' + email + '\nName:' + name + '\n --------------------------------------------------------------------------------------------------------------------------------------------- \n' + message;
+            var params = toParams(data_js);
+    
+            request.open("POST", "https://postmail.invotes.com/send", true);
+            request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    
+            request.send(params);
+    
+            return false;
+        }
+    
+        sendButton.onclick = js_send;
+    
+        function toParams(data_js) {
+            var form_data = [];
+            for ( var key in data_js ) {
+                form_data.push(encodeURIComponent(key) + "=" + encodeURIComponent(data_js[key]));
+            }
+    
+            return form_data.join("&");
+        }
+    
+        var js_form = document.getElementById(form_id_js);
+        js_form.addEventListener("submit", function (e) {
+            e.preventDefault();
+        });
+    </script>
+        
+
     </section>
     
     
